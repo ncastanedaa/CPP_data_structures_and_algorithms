@@ -3,12 +3,11 @@
 #include<cstdlib>
 #include<vector>
 #include<random>
-#include<thread>
 #include<ctime>
 #include<conio.h>
 using namespace std;
 
-class graph{
+class Graph{
 
 // graph reperesented by a matrix with its elements[i][j] the weight of the path from node i to node j;
 
@@ -16,10 +15,33 @@ public:
 
 int nodes;
 double density;
+vector<vector<int>> matrix;
 
-graph(int nd,double dns):nodes(nd),density(dns){
+Graph(int nd,double dns):nodes(nd),density(dns), matrix(make_unweighted_graph(nd,dns)){
     
 }
+
+vector<vector<int>> fill_weights(vector<vector<int>>& matrix,int max_weight){
+    for(int row = 0; row < matrix.size(); row++){
+        for(int column = 0; column < matrix.size(); column++){
+            matrix[row][column] *= randomInt(max_weight);
+        }
+    }
+    return matrix;
+}
+
+
+void printg(vector<vector<int>>& matrix){
+    for(const auto& row: matrix){
+        for(const auto& element: row){
+            cout <<element<< " ";
+        }
+        cout << endl;
+    }
+    
+}
+
+private:
 
 vector<vector<int>> make_unweighted_graph(int num_nodes, double probability){
     num_nodes = nodes;
@@ -40,28 +62,6 @@ vector<vector<int>> make_unweighted_graph(int num_nodes, double probability){
     return matrix;
 };
 
-vector<vector<int>> fill_weights(vector<vector<int>>& matrix,int max_weight){
-    for(int row = 0; row < matrix.size(); row++){
-        for(int column = 0; column < matrix.size(); column++){
-            matrix[row][column] *= randomInt(max_weight);
-        }
-    }
-    return matrix;
-}
-
-
-void print_graph(vector<vector<int>>& matrix){
-    for(const auto& row: matrix){
-        for(const auto& element: row){
-            cout <<element<< " ";
-        }
-        cout << endl;
-    }
-    
-}
-
-private:
-
 
 int generateRandomOnes(double probability){
     double percentile = probability*100;
@@ -78,22 +78,24 @@ int randomInt(int max){
     return random;
 }
 
+
 };
+
 
 int main(){
     srand(time(NULL));
-    vector<vector<int>> graph_1, graph_2;
-    graph my_graph(50,0.2);
-    graph_1 = my_graph.make_unweighted_graph(my_graph.nodes,my_graph.density);
-    my_graph.print_graph(graph_1);
-    graph_2 = my_graph.fill_weights(graph_1,9);
+    Graph my_graph_1(50,0.1);
+    my_graph_1.printg(my_graph_1.matrix);
     cout << endl;
-    my_graph.print_graph(graph_2);
+    my_graph_1.fill_weights(my_graph_1.matrix,9);
+    my_graph_1.printg(my_graph_1.matrix);
 
     cout << endl;
     cout << "Press any key to exit..." << endl;
 
     // Wait for a key press
+
+
     _getch();
 
     return 0;
