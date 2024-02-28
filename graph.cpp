@@ -1,9 +1,10 @@
 //Code made by Nicolas Castaneda 
 #include<iostream>
+#include<cstdlib>
 #include<vector>
 #include<random>
-#include<chrono>
 #include<thread>
+#include<ctime>
 #include<conio.h>
 using namespace std;
 
@@ -31,8 +32,8 @@ vector<vector<int>> make_unweighted_graph(int num_nodes, double probability){
             if(row == column){
                 matrix[row][column] = 0;
             }else{
-                 matrix[row][column] = matrix[column][row] = generateRandom(probability);
-                 this_thread::sleep_for(chrono::milliseconds(1));
+                 matrix[row][column] = matrix[column][row] = generateRandomOnes(probability);
+               
             };
         }
     }
@@ -49,7 +50,6 @@ vector<vector<int>> fill_weights(vector<vector<int>>& matrix,int max_weight){
 }
 
 
-
 void print_graph(vector<vector<int>>& matrix){
     for(const auto& row: matrix){
         for(const auto& element: row){
@@ -63,36 +63,32 @@ void print_graph(vector<vector<int>>& matrix){
 private:
 
 
-int generateRandom(double probability) {
-    random_device rd;
-    mt19937_64 gen(static_cast<unsigned>(chrono::system_clock::now().time_since_epoch().count()));
-    uniform_real_distribution<> dis(0, 1.0);
-
-    double random =dis(gen);
-    if (random < probability){
-        return 1;
+int generateRandomOnes(double probability){
+    double percentile = probability*100;
+    int random = rand()%100+1;
+    if(random <= percentile){
+        return 1;   
     }else{
         return 0;
     }
-}
-
-   
+}  
 
 int randomInt(int max){
-    random_device rd;
-    mt19937_64 gen(rd());
-    uniform_int_distribution<> dis(0,max);
-    return dis(gen);
+    int random = rand()%max+1;
+    return random;
 }
 
 };
 
 int main(){
-
-    vector<vector<int>> graph_1;
-    graph my_graph(20,0.3);
+    srand(time(NULL));
+    vector<vector<int>> graph_1, graph_2;
+    graph my_graph(50,0.2);
     graph_1 = my_graph.make_unweighted_graph(my_graph.nodes,my_graph.density);
     my_graph.print_graph(graph_1);
+    graph_2 = my_graph.fill_weights(graph_1,9);
+    cout << endl;
+    my_graph.print_graph(graph_2);
 
     cout << endl;
     cout << "Press any key to exit..." << endl;
