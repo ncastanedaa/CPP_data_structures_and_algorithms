@@ -10,6 +10,7 @@ It also has the function fill_weights(...) to put random POSITIVE weigths iN the
 #include<vector>
 #include<random>
 #include<ctime>
+#include<limits>
 #include<conio.h>
 
 using namespace std;
@@ -50,7 +51,11 @@ vector<vector<int>> fill_weights(vector<vector<int>>& matrix,int max_weight){
 void printg(vector<vector<int>>& matrix){
     for(const auto& row: matrix){
         for(const auto& element: row){
-            cout <<element<< " ";
+            if(element > 100000){
+                cout << "-" << " ";
+            }else{
+                cout << element << " ";
+            }
         }
         cout << endl;
     }
@@ -85,7 +90,7 @@ inline int generateRandomOnes(double probability){
     if(random <= percentile){
         return 1;   
     }else{
-        return 0;
+        return 1000000;
     }
 }  
 
@@ -99,7 +104,7 @@ inline int randomInt(int max){
 
 int main(){
     srand(time(NULL));
-    Graph my_graph_1(6,0.3);
+    Graph my_graph_1(6,0.35);
     my_graph_1.printg(my_graph_1.matrix);
     cout << endl;
     my_graph_1.fill_weights(my_graph_1.matrix,9);
@@ -109,7 +114,6 @@ int main(){
     cout << "Press any key to exit..." << endl;
 
     // Wait for a key press
-
 
     _getch();
 
