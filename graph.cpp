@@ -51,7 +51,7 @@ vector<vector<int>> fill_weights(vector<vector<int>>& matrix,int max_weight){
 void printg(vector<vector<int>>& matrix){
     for(const auto& row: matrix){
         for(const auto& element: row){
-            if(element > 100000){
+            if(element < 0){
                 cout << "-" << " ";
             }else{
                 cout << element << " ";
@@ -90,7 +90,7 @@ inline int generateRandomOnes(double probability){
     if(random <= percentile){
         return 1;   
     }else{
-        return 1000000;
+        return -1;
     }
 }  
 
@@ -104,7 +104,7 @@ inline int randomInt(int max){
 
 int main(){
     srand(time(NULL));
-    Graph my_graph_1(6,0.35);
+    Graph my_graph_1(8,0.35);
     my_graph_1.printg(my_graph_1.matrix);
     cout << endl;
     my_graph_1.fill_weights(my_graph_1.matrix,9);
