@@ -11,6 +11,7 @@ It also has the function fill_weights(...) to put random POSITIVE weigths iN the
 #include<random>
 #include<ctime>
 #include<limits>
+#include <queue>
 #include<conio.h>
 
 using namespace std;
@@ -60,6 +61,47 @@ void printg(vector<vector<int>>& matrix){
         cout << endl;
     }
     
+}
+
+const int INF = numeric_limits<int>::max(); // Infinity
+
+void dijkstra(const vector<vector<int>> matrix, int source) {
+    int n = matrix.size();
+    vector<int> dist(n, INF); // Distance from the source to each nodegit
+    dist[source] = 0;
+
+    // Min-heap (priority queue) to get the node with the smallest distance
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.push({0, source});
+
+    while (!pq.empty()) {
+        int u = pq.top().second; // Get the node with the smallest distance
+        int current_dist = pq.top().first;
+        pq.pop();
+
+        // If the distance in the queue is greater than the current known distance, skip it
+        if (current_dist > dist[u])
+            continue;
+
+        // Explore neighbors
+        for (int v = 0; v < n; ++v) {
+            if (matrix[u][v] != -1) { // Ignore unconnected nodes
+                int weight = matrix[u][v];
+                if (dist[u] + weight < dist[v]) {
+                    dist[v] = dist[u] + weight;
+                    pq.push({dist[v], v});
+                }
+            }
+        }
+    }
+
+    // Print the shortest distances from the source
+    for (int i = 0; i < n; ++i) {
+        if (dist[i] == INF)
+            cout << "Node " << i << " is unreachable from Node " << source << endl;
+        else
+            cout << "Shortest distance from Node " << source << " to Node " << i << " is " << dist[i] << endl;
+    }
 }
 
 private:
