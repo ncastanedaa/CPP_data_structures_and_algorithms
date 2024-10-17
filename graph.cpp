@@ -65,43 +65,49 @@ void printg(vector<vector<int>>& matrix){
 
 const int INF = numeric_limits<int>::max(); // Infinity
 
-void dijkstra(const vector<vector<int>> matrix, int source) {
-    int n = matrix.size();
-    vector<int> dist(n, INF); // Distance from the source to each nodegit
-    dist[source] = 0;
+// Dijkstra's algorithm function to find the shortest paths from the startNode to all other nodes.
+// Input: graph (adjacency matrix), startNode (index of the starting node).
+// Output: A vector containing the shortest distances from startNode to every other node.
+vector<int> dijkstra(const vector<vector<int>>& graph, int startNode) {
+    int n = graph.size(); // Number of nodes in the graph.
+    vector<int> dist(n, INF); // Initialize distances to all nodes as infinity.
+    vector<bool> visited(n, false); // Track whether a node has been visited.
+    dist[startNode] = 0; // Distance to the starting node is always 0.
 
-    // Min-heap (priority queue) to get the node with the smallest distance
+    // Min-heap priority queue to store (distance, node) pairs.
+    // The priority queue helps efficiently fetch the node with the minimum distance.
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-    pq.push({0, source});
+    pq.push({0, startNode}); // Push the starting node with distance 0 into the queue.
 
+    // Loop until there are no more nodes to process in the priority queue.
     while (!pq.empty()) {
-        int u = pq.top().second; // Get the node with the smallest distance
-        int current_dist = pq.top().first;
+        // Extract the node with the minimum distance from the priority queue.
+        int node = pq.top().second; // Get the node index.
         pq.pop();
 
-        // If the distance in the queue is greater than the current known distance, skip it
-        if (current_dist > dist[u])
-            continue;
+        // If this node has already been visited, skip it.
+        if (visited[node]) continue;
 
-        // Explore neighbors
-        for (int v = 0; v < n; ++v) {
-            if (matrix[u][v] != -1) { // Ignore unconnected nodes
-                int weight = matrix[u][v];
-                if (dist[u] + weight < dist[v]) {
-                    dist[v] = dist[u] + weight;
-                    pq.push({dist[v], v});
+        // Mark the current node as visited.
+        visited[node] = true;
+
+        // Iterate through all neighbors of the current node.
+        for (int neighbor = 0; neighbor < n; ++neighbor) {
+            // Check if there is an edge between 'node' and 'neighbor'.
+            if (graph[node][neighbor] != 0 && !visited[neighbor]) {
+                // Calculate the new distance to the neighbor.
+                int newDist = dist[node] + graph[node][neighbor];
+
+                // If the new distance is shorter than the currently known distance, update it.
+                if (newDist < dist[neighbor]) {
+                    dist[neighbor] = newDist; // Update the distance to the neighbor.
+                    pq.push({newDist, neighbor}); // Push the updated distance and node into the queue.
                 }
             }
         }
     }
 
-    // Print the shortest distances from the source
-    for (int i = 0; i < n; ++i) {
-        if (dist[i] == INF)
-            cout << "Node " << i << " is unreachable from Node " << source << endl;
-        else
-            cout << "Shortest distance from Node " << source << " to Node " << i << " is " << dist[i] << endl;
-    }
+    return dist; // Return the vector of shortest distances from startNode to each node.
 }
 
 private:
@@ -122,6 +128,7 @@ vector<vector<int>> make_unweighted_graph(int num_nodes, double probability){
             };
         }
     }
+    
     return matrix;
 };
 
@@ -132,7 +139,7 @@ inline int generateRandomOnes(double probability){
     if(random <= percentile){
         return 1;   
     }else{
-        return -1;
+        return 0;
     }
 }  
 
@@ -145,13 +152,32 @@ inline int randomInt(int max){
 
 
 int main(){
+
+
     srand(time(NULL));
-    Graph my_graph_1(8,0.35);
+    Graph my_graph_1(20,0.2);
     my_graph_1.printg(my_graph_1.matrix);
     cout << endl;
     my_graph_1.fill_weights(my_graph_1.matrix,9);
     my_graph_1.printg(my_graph_1.matrix);
 
+    int startNode  = 0;
+    int endNode = 5;
+
+    vector<int> distances = my_graph_1.dijkstra(my_graph_1.matrix,startNode);
+
+     // Print the shortest distances from startNode to all other nodes.
+    cout << "Shortest distances from node " << startNode << ":\n";
+    for (int i = 0; i < distances.size(); ++i) {
+        // If a node is unreachable, it will still have a distance of INF.
+        if (distances[i] == my_graph_1.INF) {
+            cout << "Node " << i << ": Unreachable\n";
+        } else {
+            cout << "Node " << i << ": " << distances[i] << "\n";
+        }
+    }
+
+   
     cout << endl;
     cout << "Press any key to exit..." << endl;
 
