@@ -151,6 +151,7 @@ int main(){
     cout << endl;
     my_graph_1.fill_weights(my_graph_1.matrix,9);
     my_graph_1.printg(my_graph_1.matrix);
+    //my_graph_1.dijkstra(my_graph_1.matrix,0);
 
     cout << endl;
     cout << "Press any key to exit..." << endl;
